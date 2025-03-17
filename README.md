@@ -18,6 +18,8 @@ This project is a scheduling agent that assists in managing and organizing tasks
 ### Prerequisites
 
 - Python 3.x
+- uv (Python package installer)
+- bun (JavaScript runtime & package manager)
 - [Add other dependencies as they are added to the project]
 
 ### Installation
@@ -28,14 +30,30 @@ git clone https://github.com/yourusername/scheduler_agent.git
 cd scheduler_agent
 ```
 
-2. Install dependencies:
+2. Install dependencies (MacOS):
 ```bash
 # Add installation commands as dependencies are added
+# UV
+$ curl -LsSf https://astral.sh/uv/install.sh | sh
+# bun
+$ curl -fsSL https://bun.sh/install | bash
+
+$ python3 -m venv .venv
+
+$ source .venv/bin/activate
+
+$ uv init .
+
+$ uv add openai-agents
+
+$ python agent.py
 ```
 
 ### Usage
 
 [Add usage instructions as the project develops]
+
+Traces: https://platform.openai.com/traces
 
 ## Contributing
 
