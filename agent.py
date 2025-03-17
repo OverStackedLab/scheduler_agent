@@ -1,6 +1,13 @@
 from agents import Agent, InputGuardrail,GuardrailFunctionOutput, Runner
 from pydantic import BaseModel
 import asyncio
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
+model = os.getenv('MODEL_CHOICE', 'gpt-4o-mini')
 
 class HomeworkOutput(BaseModel):
     is_homework: bool
@@ -35,6 +42,7 @@ async def homework_guardrail(ctx, agent, input_data):
 
 triage_agent = Agent(
     name="Triage Agent",
+    model=model,
     instructions="You determine which agent to use based on the user's homework question",
     handoffs=[history_tutor_agent, math_tutor_agent],
     input_guardrails=[
