@@ -53,6 +53,9 @@ $ uv pip install "fastapi[standard]"
 $ uv pip install -r pyproject.toml
 
 $ fastapi dev main.py
+
+server   Server started at http://127.0.0.1:8000
+server   Documentation at http://127.0.0.1:8000/docs
 ```
 
 ### Usage
