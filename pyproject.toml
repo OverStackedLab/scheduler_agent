@@ -5,11 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "fastapi>=0.115.14",
-    "openai-agents>=0.0.4",
-<<<<<<< Updated upstream
+    "fastapi>=0.115.6",
+    "fastapi-cli==0.0.7",
+    "google-api-python-client>=2.160.0",
+    "google-auth>=2.38.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.1",
+    "openai-agents==0.1.0",
     "python-dotenv>=1.0.1",
-=======
-    "python-dotenv>=1.1.1",
->>>>>>> Stashed changes
+    "sqlite-vec>=0.1.6",
 ]

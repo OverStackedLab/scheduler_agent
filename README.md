@@ -25,12 +25,14 @@ This project is a scheduling agent that assists in managing and organizing tasks
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/scheduler_agent.git
 cd scheduler_agent
 ```
 
 2. Install dependencies (MacOS):
+
 ```bash
 # Add installation commands as dependencies are added
 # UV
@@ -46,7 +48,11 @@ $ uv init .
 
 $ uv add openai-agents
 
-$ python agent.py
+$ uv pip install "fastapi[standard]"
+
+$ uv pip install -r pyproject.toml
+
+$ fastapi dev main.py
 ```
 
 ### Usage
@@ -65,4 +71,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Contact
 
-[Add your contact information or preferred method of communication] 
+[Add your contact information or preferred method of communication]
