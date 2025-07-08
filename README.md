@@ -37,18 +37,10 @@ cd scheduler_agent
 # Add installation commands as dependencies are added
 # UV
 $ curl -LsSf https://astral.sh/uv/install.sh | sh
-# bun
-$ curl -fsSL https://bun.sh/install | bash
 
 $ python3 -m venv .venv
 
 $ source .venv/bin/activate
-
-$ uv init .
-
-$ uv add openai-agents
-
-$ uv pip install "fastapi[standard]"
 
 $ uv pip install -r pyproject.toml
 
