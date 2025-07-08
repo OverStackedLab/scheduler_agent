@@ -1,15 +1,25 @@
 from dotenv import load_dotenv
 from agents import Agent, Runner, function_tool
-import os, asyncio
+import os
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from typing import Optional
+from datetime import datetime, timezone
 
 
 load_dotenv()  # must run before importing agents
 # OPENAI_API_KEY now lives in os.environ
+
+
+def get_current_datetime_info() -> str:
+    """Get current date and time information for the agent context."""
+    now = datetime.now(timezone.utc)
+    return f"Current date and time: {now.strftime('%Y-%m-%d %H:%M:%S UTC')} (Year: {now.year})"
+
+
 CODE_PROMPT = (
-    "You are a virtual executive assistant that helps schedule meetings and send emails using Google APIs. "
+    "You are a virtual executive assistant that helps schedule meetings and send emails using Google APIs."
+    f"IMPORTANT: {get_current_datetime_info()} "
     "When a user instructs you to schedule a meeting, you must call the 'schedule_meeting' function with appropriate parameters. "
     "Similarly, if the user asks you to send an email, call the 'send_email' function. "
     "Use clear, concise language. When a function call is needed, output a JSON-formatted call."
@@ -41,7 +51,7 @@ def schedule_meeting(
     end_time: str,
     location: Optional[str] = "Online",
     description: Optional[str] = "Scheduled by your virtual EA",
-    attendee_emails: Optional[str] = "overstacked@icloud.com",
+    attendee_emails: Optional[str] = "",
     timezone: Optional[str] = "UTC",
 ):
     """
@@ -53,7 +63,7 @@ def schedule_meeting(
         end_time: End time in ISO 8601 format (e.g., '2025-07-13T10:00:00-07:00')
         location: Meeting location (default: "Online")
         description: Meeting description (default: "Scheduled by your virtual EA")
-        attendee_emails: Comma-separated email addresses (default: "overstacked@icloud.com")
+        attendee_emails: Comma-separated email addresses (default: "email@domain.com")
         timezone: Timezone for the event (default: "UTC")
 
     Returns:
@@ -110,7 +120,7 @@ async def process_agent_message(msg: str) -> str:
 
     """
     {
-      "message": " "Schedule a team standup meeting for July 9, 2025 from 9 AM to 10 AM""
+      "message": "Schedule a team standup meeting for tomorrow from 9 AM to 10 AM"
     }
     """
     result = await Runner.run(google_agent, msg)
