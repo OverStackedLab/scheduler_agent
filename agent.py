@@ -3,6 +3,7 @@ from agents import Agent, Runner, function_tool
 import os, asyncio
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from typing import Optional
 
 
 load_dotenv()  # must run before importing agents
@@ -34,35 +35,69 @@ def get_google_credentials() -> Credentials:
 
 
 @function_tool
-def schedule_meeting(message: str) -> str:
-    """Add a Google Calendar event and return its link."""
+def schedule_meeting(
+    summary: str,
+    start_time: str,
+    end_time: str,
+    location: Optional[str] = "Online",
+    description: Optional[str] = "Scheduled by your virtual EA",
+    attendee_emails: Optional[str] = "overstacked@icloud.com",
+    timezone: Optional[str] = "UTC",
+):
     """
     Schedule a meeting in Google Calendar using stored credentials.
-    start_time and end_time must be ISO 8601 strings.
+
+    Args:
+        summary: The meeting title/summary
+        start_time: Start time in ISO 8601 format (e.g., '2025-07-13T09:00:00-07:00')
+        end_time: End time in ISO 8601 format (e.g., '2025-07-13T10:00:00-07:00')
+        location: Meeting location (default: "Online")
+        description: Meeting description (default: "Scheduled by your virtual EA")
+        attendee_emails: Comma-separated email addresses (default: "overstacked@icloud.com")
+        timezone: Timezone for the event (default: "UTC")
+
+    Returns:
+        str: HTML link to the created calendar event
     """
-    creds = get_google_credentials()
-    service = build("calendar", "v3", credentials=creds)
-    event = {
-        "summary": "Test Meeting",
-        "location": "Online",
-        "description": "Scheduled by your virtual EA",
-        "start": {
-            "dateTime": "2025-07-13T09:00:00-07:00",
-            "timeZone": "UTC",
-        },
-        "end": {
-            "dateTime": "2025-07-13T10:00:00-07:00",
-            "timeZone": "UTC",
-        },
-        "attendees": [{"email": "overstacked@icloud.com"}],
-        "reminders": {"useDefault": True},
-    }
-    created_event = service.events().insert(calendarId="primary", body=event).execute()
-    print("created_event", created_event)
-    return created_event["htmlLink"]
+    try:
+        creds = get_google_credentials()
+        service = build("calendar", "v3", credentials=creds)
+
+        # Parse attendees if provided
+        attendees = []
+        if attendee_emails:
+            email_list = [email.strip() for email in attendee_emails.split(",")]
+            attendees = [{"email": email} for email in email_list if email]
+
+        event = {
+            "summary": summary,
+            "location": location,
+            "description": description,
+            "start": {
+                "dateTime": start_time,
+                "timeZone": timezone,
+            },
+            "end": {
+                "dateTime": end_time,
+                "timeZone": timezone,
+            },
+            "attendees": attendees,
+            "reminders": {"useDefault": True},
+        }
+
+        created_event = (
+            service.events().insert(calendarId="primary", body=event).execute()
+        )
+        print("created_event", created_event)
+        return (
+            f"Meeting '{summary}' scheduled successfully: {created_event['htmlLink']}"
+        )
+    except Exception as e:
+        print("error", e)
+        return f"Error scheduling meeting: {str(e)}"
 
 
-haiku_agent = Agent(
+google_agent = Agent(
     name="Google agent",
     instructions=CODE_PROMPT,
     model="o3-mini",
@@ -72,5 +107,11 @@ haiku_agent = Agent(
 
 async def process_agent_message(msg: str) -> str:
     """Run the agent and get the final answer."""
-    result = await Runner.run(haiku_agent, msg)
+
+    """
+    {
+      "message": " "Schedule a team standup meeting for July 9, 2025 from 9 AM to 10 AM""
+    }
+    """
+    result = await Runner.run(google_agent, msg)
     return result.final_output
