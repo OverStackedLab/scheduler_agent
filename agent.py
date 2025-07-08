@@ -25,7 +25,8 @@ def get_google_credentials() -> Credentials:
     Retrieve google credentials from the environment variables.
     """
     return Credentials(
-        access_token=os.getenv("GOOGLE_ACCESS_TOKEN"),
+        token=os.getenv("GOOGLE_ACCESS_TOKEN"),
+        refresh_token="",
         token_uri="https://oauth2.googleapis.com/token",
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
         client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
@@ -33,7 +34,7 @@ def get_google_credentials() -> Credentials:
 
 
 @function_tool
-def schedule_meeting():
+def schedule_meeting(message: str) -> str:
     """Add a Google Calendar event and return its link."""
     """
     Schedule a meeting in Google Calendar using stored credentials.
@@ -46,18 +47,19 @@ def schedule_meeting():
         "location": "Online",
         "description": "Scheduled by your virtual EA",
         "start": {
-            "dateTime": "2025-07-15T09:00:00-07:00",
+            "dateTime": "2025-07-13T09:00:00-07:00",
             "timeZone": "UTC",
         },
         "end": {
-            "dateTime": "2025-07-15T10:00:00-07:00",
+            "dateTime": "2025-07-13T10:00:00-07:00",
             "timeZone": "UTC",
         },
         "attendees": [{"email": "overstacked@icloud.com"}],
         "reminders": {"useDefault": True},
     }
     created_event = service.events().insert(calendarId="primary", body=event).execute()
-    return created_event
+    print("created_event", created_event)
+    return created_event["htmlLink"]
 
 
 haiku_agent = Agent(

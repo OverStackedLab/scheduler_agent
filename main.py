@@ -55,13 +55,14 @@ def login():
     return RedirectResponse(url=authorization_url)
 
 
-@app.get("/redirect")
+@app.get("/auth/redirect")
 async def auth_redirect(code: str = Query(...)):
     flow = get_google_flow()
     flow.fetch_token(code=code)
     credentials = flow.credentials
     user_creds["token"] = credentials.to_json()
     print("user_creds", user_creds)
+    os.environ["GOOGLE_ACCESS_TOKEN"] = credentials.token
     return {"message": "Authentication successful", "token": credentials.token}
 
 
