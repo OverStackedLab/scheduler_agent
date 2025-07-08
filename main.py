@@ -68,6 +68,11 @@ async def auth_redirect(code: str = Query(...)):
 
 @app.post("/agent/chat")
 async def agent_chat(request: AgentRequest):
+    """
+    {
+      "message": "Schedule a team standup meeting for tomorrow from 9 AM to 10 AM"
+    }
+    """
     try:
         reply = await process_agent_message(request.message)
         return {"response": reply}

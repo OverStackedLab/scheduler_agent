@@ -45,6 +45,16 @@ def get_google_credentials() -> Credentials:
 
 
 @function_tool
+def get_current_date_time() -> str:
+    """
+    Get the current date and time information.
+    This tool helps the agent understand what 'today', 'tomorrow', 'next week' means.
+    """
+    now = datetime.now(timezone.utc)
+    return f"Current date and time: {now.strftime('%A, %B %d, %Y at %H:%M:%S UTC')} (Year: {now.year})"
+
+
+@function_tool
 def schedule_meeting(
     summary: str,
     start_time: str,
@@ -118,10 +128,5 @@ google_agent = Agent(
 async def process_agent_message(msg: str) -> str:
     """Run the agent and get the final answer."""
 
-    """
-    {
-      "message": "Schedule a team standup meeting for tomorrow from 9 AM to 10 AM"
-    }
-    """
     result = await Runner.run(google_agent, msg)
     return result.final_output
